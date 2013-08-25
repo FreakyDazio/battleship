@@ -37,20 +37,32 @@ func (d Decision) Make() ([2]uint8, error) {
 					if d.hitGrid[y+1][x] == AvailableSpace {
 						scoredGrid[y+1][x]++
 					}
+					if y > 0 && d.hitGrid[y-1][x] == HitSpace {
+						scoredGrid[y+1][x] += 2
+					}
 				}
 				if y > 0 {
 					if d.hitGrid[y-1][x] == AvailableSpace {
 						scoredGrid[y-1][x]++
+					}
+					if y < 9 && d.hitGrid[y+1][x] == HitSpace {
+						scoredGrid[y-1][x] += 2
 					}
 				}
 				if x < 9 {
 					if d.hitGrid[y][x+1] == AvailableSpace {
 						scoredGrid[y][x+1]++
 					}
+					if x > 0 && d.hitGrid[y][x-1] == HitSpace {
+						scoredGrid[y][x+1] += 2
+					}
 				}
 				if x > 0 {
 					if d.hitGrid[y][x-1] == AvailableSpace {
 						scoredGrid[y][x-1]++
+					}
+					if x < 9 && d.hitGrid[y][x+1] == HitSpace {
+						scoredGrid[y][x-1] += 2
 					}
 				}
 			} else {

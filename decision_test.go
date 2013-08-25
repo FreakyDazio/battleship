@@ -55,6 +55,14 @@ func TestMakeDecision(t *testing.T) {
 		!(point[0] == 4 && point[1] == 5) && !(point[0] == 6 && point[1] == 5) {
 		t.Error("Decision didn't select the best available space")
 	}
+
+	// Show a preference to spaces that follow same axis as previous
+	// hits
+	hitGrid[5][6] = HitSpace
+	point, _ = decision.Make()
+	if !(point[0] == 5 && point[1] == 7) && !(point[0] == 5 && point[1] == 4) {
+		t.Error("Decision didn't favour hit axis")
+	}
 }
 
 func BenchmarkMakeDecision(b *testing.B) {
