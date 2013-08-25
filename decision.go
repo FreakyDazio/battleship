@@ -85,7 +85,7 @@ func (d Decision) Make() ([2]uint8, error) {
 		}
 	}
 
-	if len(ratedMoves) == 0 || highestScore == 0 {
+	if highestScore == 0 {
 		return result, errors.New("No available moves")
 	} else {
 		rand.Seed(time.Now().UnixNano())
