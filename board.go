@@ -27,7 +27,7 @@ func NewBoard(p *Player) *Board {
 	rand.Seed(time.Now().UnixNano())
 
 	for _, ship := range ships {
-		availableSpaces := b.elements.LocateSpace(int(ship.Length()))
+		availableSpaces := b.elements.LocateSpace(ship.Length())
 		options := len(availableSpaces)
 		if options > 0 {
 			selected := availableSpaces[rand.Intn(options)]

@@ -6,7 +6,20 @@ func TestLocateSpace(t *testing.T) {
 	var grid GameGrid
 	options := grid.LocateSpace(10)
 	if length := len(options); length != 20 {
-		t.Errorf("Failed to find all available spaces. Only found %d", length)
+		t.Errorf("Failed to find all available spaces. Found %d", length)
+	}
+
+	options = grid.LocateSpace(5)
+	if length := len(options); length != 120 {
+		t.Errorf("Failed to find all available spaces. Found %d", length)
+	}
+
+	for i, _ := range grid[0] {
+		grid[0][i] = BoardShipSpace
+	}
+	options = grid.LocateSpace(10)
+	if length := len(options); length != 9 {
+		t.Errorf("Failed to find all available spaces. Found %d", length)
 	}
 }
 

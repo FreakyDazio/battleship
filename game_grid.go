@@ -2,29 +2,29 @@ package battleship
 
 type GameGrid [10][10]byte
 
-func (grid GameGrid) LocateSpace(maxLength int) [][][2]uint8 {
+func (grid GameGrid) LocateSpace(maxLength uint8) [][][2]uint8 {
 	result := make([][][2]uint8, 0)
-	for y := 0; y <= 9; y++ {
-		for x := 0; x <= 9; x++ {
+	for y := uint8(0); y <= uint8(9); y++ {
+		for x := uint8(0); x <= uint8(9); x++ {
 			verticalComb := make([][2]uint8, 0, maxLength)
-			for vi := 0; vi < maxLength; vi++ {
+			for vi := uint8(0); vi < maxLength; vi++ {
 				if !grid.SpaceAvailable(y+vi, x) {
 					break
 				}
-				verticalComb = append(verticalComb, [2]uint8{uint8(y + vi), uint8(x)})
+				verticalComb = append(verticalComb, [2]uint8{y + vi, x})
 			}
-			if len(verticalComb) == maxLength {
+			if uint8(len(verticalComb)) == maxLength {
 				result = append(result, verticalComb)
 			}
 
 			horizontalComb := make([][2]uint8, 0, maxLength)
-			for hi := 0; hi < maxLength; hi++ {
+			for hi := uint8(0); hi < maxLength; hi++ {
 				if !grid.SpaceAvailable(y, x+hi) {
 					break
 				}
-				horizontalComb = append(horizontalComb, [2]uint8{uint8(y), uint8(x + hi)})
+				horizontalComb = append(horizontalComb, [2]uint8{y, x + hi})
 			}
-			if len(horizontalComb) == maxLength {
+			if uint8(len(horizontalComb)) == maxLength {
 				result = append(result, horizontalComb)
 			}
 		}
@@ -32,8 +32,8 @@ func (grid GameGrid) LocateSpace(maxLength int) [][][2]uint8 {
 	return result
 }
 
-func (grid GameGrid) SpaceAvailable(y, x int) bool {
-	if y > 9 || x > 9 {
+func (grid GameGrid) SpaceAvailable(y, x uint8) bool {
+	if y > uint8(9) || x > uint8(9) {
 		return false
 	}
 	return grid[y][x] == BoardWaterSpace
