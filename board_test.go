@@ -12,13 +12,11 @@ func TestNewBoard(t *testing.T) {
 	}
 
 	shipTiles := 0
-	for _, col := range b.elements {
-		for _, val := range col {
-			if val == BoardShipSpace {
-				shipTiles += 1
-			}
+	b.elements.Iterate(func(y, x uint8, val *byte) {
+		if *val == BoardShipSpace {
+			shipTiles++
 		}
-	}
+	})
 
 	if shipTiles != (2 + 3 + 3 + 4 + 5) {
 		t.Log(b.elements)
