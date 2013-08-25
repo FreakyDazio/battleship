@@ -45,7 +45,6 @@ func (grid GameGrid) scoreXAxis(y, x uint8, inc int, scoreGrid *GameGrid, access
 
 func (d Decision) Make() ([2]uint8, error) {
 	var scoredGrid GameGrid
-	var shipSpacesDiscovered uint8
 	var result [2]uint8
 
 	d.hitGrid.Iterate(func(y, x uint8, val *byte) {
@@ -53,7 +52,6 @@ func (d Decision) Make() ([2]uint8, error) {
 		case AvailableSpace:
 			scoredGrid[y][x]++
 		case HitSpace:
-			shipSpacesDiscovered++
 			scoredGrid[y][x] = 0
 			if y < 9 {
 				d.hitGrid.scoreYAxis(y, x, 1, &scoredGrid, y > 0)
