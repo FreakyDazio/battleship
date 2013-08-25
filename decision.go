@@ -22,23 +22,63 @@ func NewDecision(shipGrid, hitGrid *GameGrid) *Decision {
 }
 
 func (d Decision) Make() ([2]uint8, error) {
-	availableSpaces := make([][2]uint8, 0)
+	var scoredGrid GameGrid
+	var shipSpacesDiscovered uint8
 	var result [2]uint8
 
 	for y := uint8(0); y < uint8(10); y++ {
 		for x := uint8(0); x < uint8(10); x++ {
 			if d.hitGrid[y][x] == AvailableSpace {
-				availableSpaces = append(availableSpaces, [2]uint8{y, x})
+				scoredGrid[y][x]++ // Increment the score for this cell
+			} else if d.hitGrid[y][x] == HitSpace {
+				shipSpacesDiscovered++
+				scoredGrid[y][x] = 0 // Ensure this cell is ignored
+				if y < 9 {
+					if d.hitGrid[y+1][x] == AvailableSpace {
+						scoredGrid[y+1][x]++
+					}
+				}
+				if y > 0 {
+					if d.hitGrid[y-1][x] == AvailableSpace {
+						scoredGrid[y-1][x]++
+					}
+				}
+				if x < 9 {
+					if d.hitGrid[y][x+1] == AvailableSpace {
+						scoredGrid[y][x+1]++
+					}
+				}
+				if x > 0 {
+					if d.hitGrid[y][x-1] == AvailableSpace {
+						scoredGrid[y][x-1]++
+					}
+				}
+			} else {
+				scoredGrid[y][x] = 0 // Ensure this cell is ignored
 			}
 		}
 	}
 
-	if len(availableSpaces) == 0 {
-		return result, errors.New("No available moves")
+	ratedMoves := make([][2]uint8, 0)
+	var highestScore uint8 = 0
+	for y := uint8(0); y < uint8(10); y++ {
+		for x := uint8(0); x < uint8(10); x++ {
+			if scoredGrid[y][x] > highestScore {
+				highestScore = scoredGrid[y][x]
+				ratedMoves = make([][2]uint8, 0)                // Reset rated moves
+				ratedMoves = append(ratedMoves, [2]uint8{y, x}) // Add to rated moves
+			} else if scoredGrid[y][x] == highestScore {
+				ratedMoves = append(ratedMoves, [2]uint8{y, x}) // Add to rated moves
+			}
+		}
 	}
 
-	rand.Seed(time.Now().UnixNano())
+	if len(ratedMoves) == 0 || highestScore == 0 {
+		return result, errors.New("No available moves")
+	} else {
+		rand.Seed(time.Now().UnixNano())
+		result = ratedMoves[rand.Intn(len(ratedMoves))]
+	}
 
-	return availableSpaces[rand.Intn(len(availableSpaces))], nil
-
+	return result, nil
 }
