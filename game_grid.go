@@ -4,8 +4,8 @@ type GameGrid [10][10]byte
 
 func (grid GameGrid) LocateSpace(maxLength uint8) [][][2]uint8 {
 	result := make([][][2]uint8, 0)
-	for y := uint8(0); y <= uint8(9); y++ {
-		for x := uint8(0); x <= uint8(9); x++ {
+	for y := uint8(0); y < uint8(10); y++ {
+		for x := uint8(0); x < uint8(10); x++ {
 			verticalComb := make([][2]uint8, 0, maxLength)
 			for vi := uint8(0); vi < maxLength; vi++ {
 				if !grid.SpaceAvailable(y+vi, x) {
