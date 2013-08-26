@@ -12,8 +12,8 @@ func TestNewBoard(t *testing.T) {
 	}
 
 	shipTiles := 0
-	b.elements.Iterate(func(y, x uint8, val *byte) {
-		if *val == BoardShipSpace {
+	b.elements.Iterate(func(y, x uint8, val byte) {
+		if val == BoardShipSpace {
 			shipTiles++
 		}
 	})

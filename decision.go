@@ -13,12 +13,11 @@ const (
 )
 
 type Decision struct {
-	shipGrid *GameGrid
 	hitGrid  *GameGrid
 }
 
-func NewDecision(shipGrid, hitGrid *GameGrid) *Decision {
-	return &Decision{shipGrid: shipGrid, hitGrid: hitGrid}
+func NewDecision(hitGrid *GameGrid) *Decision {
+	return &Decision{hitGrid: hitGrid}
 }
 
 func (grid GameGrid) scoreYAxis(y, x uint8, inc int, scoreGrid *GameGrid, accessible bool) {
@@ -44,11 +43,11 @@ func (grid GameGrid) scoreXAxis(y, x uint8, inc int, scoreGrid *GameGrid, access
 }
 
 func (d Decision) Make() ([2]uint8, error) {
-	var scoredGrid GameGrid
-	var result [2]uint8
+	scoredGrid := GameGrid{}
+	result := [2]uint8{}
 
-	d.hitGrid.Iterate(func(y, x uint8, val *byte) {
-		switch *val {
+	d.hitGrid.Iterate(func(y, x uint8, val byte) {
+		switch val {
 		case AvailableSpace:
 			scoredGrid[y][x]++
 		case HitSpace:
@@ -71,13 +70,13 @@ func (d Decision) Make() ([2]uint8, error) {
 	})
 
 	ratedMoves := make([][2]uint8, 0)
-	var highestScore uint8 = 0
-	scoredGrid.Iterate(func(y, x uint8, val *byte) {
-		if *val > highestScore {
+	highestScore := uint8(0)
+	scoredGrid.Iterate(func(y, x uint8, val byte) {
+		if val > highestScore {
 			highestScore = scoredGrid[y][x]
 			ratedMoves = make([][2]uint8, 0)                // Reset rated moves
 			ratedMoves = append(ratedMoves, [2]uint8{y, x}) // Add to rated moves
-		} else if *val == highestScore {
+		} else if val == highestScore {
 			ratedMoves = append(ratedMoves, [2]uint8{y, x}) // Add to rated moves
 		}
 	})

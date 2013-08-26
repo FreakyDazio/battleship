@@ -3,24 +3,20 @@ package battleship
 import "testing"
 
 func TestNewDecision(t *testing.T) {
-	var shipGrid GameGrid
-	var hitGrid GameGrid
+	hitGrid := GameGrid{}
 
-	NewDecision(&shipGrid, &hitGrid)
+	NewDecision(&hitGrid)
 }
 
 func TestMakeDecision(t *testing.T) {
-	var shipGrid GameGrid
-	var hitGrid GameGrid
+	hitGrid := GameGrid{}
 
 	// Tell the hit grid that all spaces have missed
-	for y := 0; y < 10; y++ {
-		for x := 0; x < 10; x++ {
-			hitGrid[y][x] = MissSpace
-		}
-	}
+	hitGrid.Iterate(func(y, x uint8, _ byte) {
+		hitGrid[y][x] = MissSpace
+	})
 
-	decision := NewDecision(&shipGrid, &hitGrid)
+	decision := NewDecision(&hitGrid)
 	val, err := decision.Make()
 	if err == nil {
 		t.Errorf("Unavailable decision not discovered. Got: %i", val)
@@ -44,11 +40,9 @@ func TestMakeDecision(t *testing.T) {
 
 	// Make all spaces available but 1 hit
 	// AI should only select spaces around the hit to begin with
-	for y := 0; y < 10; y++ {
-		for x := 0; x < 10; x++ {
-			hitGrid[y][x] = AvailableSpace
-		}
-	}
+	hitGrid.Iterate(func(y, x uint8, _ byte) {
+		hitGrid[y][x] = AvailableSpace
+	})
 	hitGrid[5][5] = HitSpace
 	point, _ = decision.Make()
 	if !(point[0] == 5 && point[1] == 4) && !(point[0] == 5 && point[1] == 6) &&
@@ -66,20 +60,18 @@ func TestMakeDecision(t *testing.T) {
 }
 
 func BenchmarkMakeDecision(b *testing.B) {
-	var hitGrid GameGrid
+	hitGrid := GameGrid{}
 
-	for y := 0; y < 10; y++ {
-		for x := 0; x < 10; x++ {
-			hitGrid[y][x] = AvailableSpace
-		}
-	}
+	hitGrid.Iterate(func(y, x uint8, _ byte) {
+		hitGrid[y][x] = AvailableSpace
+	})
 
 	hitGrid[4][4] = HitSpace
 	hitGrid[5][4] = HitSpace
 	hitGrid[4][5] = HitSpace
 	hitGrid[5][5] = HitSpace
 
-	d := NewDecision(&GameGrid{}, &hitGrid)
+	d := NewDecision(&hitGrid)
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
